@@ -46,5 +46,9 @@ setup(
         'Programming Language :: Python',
     ],
     test_suite='tests',
+    entry_points={
+        'distutils.setup_keywords': [
+            'private_repository = private_repo.hooks:validate_private_repo',
+        ],
+    },
 )
-
