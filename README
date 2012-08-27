@@ -1,0 +1,12 @@
+private_repo
+============
+
+This python package provide a simple wrapper around `Distribute <http://packages.python.org/distribute/>`_ to handle
+private projects.
+It is mostly intended for use in a package's ``setup.py`` script.
+
+It provides the following features:
+
+- Using a private package index when fetching package dependencies during ``python setup.py install``
+- Restricting the ``register`` and ``upload`` commands to a private package index, or to disable them completely
+- Easy support for authenticated URLs when accessing the index.

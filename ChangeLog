@@ -1,0 +1,9 @@
+v0.1.0 (27/08/2012)
+-------------------
+
+*New:*
+
+    * Preventing ``register`` and ``upload`` commands
+    * Using a custom index
+
+.. vim:et:ts=4:sw=4:tw=79:ft=rst:
