@@ -61,7 +61,7 @@ def get_version(package_name):
     return '0.1.0'
 
 
-release = get_version('private_repo')
+release = get_version('private_pypi')
 version = '.'.join(release.split('.')[:2])
 
 
