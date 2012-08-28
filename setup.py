@@ -20,19 +20,19 @@ def get_version(package_name):
     return '0.1.0'
 
 
-PACKAGE = 'private_pypi'
+PACKAGE = 'restricted_pkg'
 
 
 setup(
-    name="private_pypi",
+    name="restricted_pkg",
     version=get_version(PACKAGE),
     author="Raphaël Barrois",
     author_email="raphael.barrois@polytechnique.org",
     description="A simple setup.py helper for private repositories",
     license="MIT",
     keywords=['pypi', 'package index', 'private', 'repository'],
-    url="http://github.com/rbarrois/private_pypi",
-    download_url="http://pypi.python.org/pypi/private_pypi/",
+    url="http://github.com/rbarrois/restricted_pkg",
+    download_url="http://pypi.python.org/pypi/restricted_pkg/",
     packages=find_packages(),
     install_requires=[
         'distribute',
@@ -48,7 +48,7 @@ setup(
     test_suite='tests',
     entry_points={
         'distutils.setup_keywords': [
-            'private_repository = private_pypi.hooks:validate_private_repo',
+            'private_repository = restricted_pkg.hooks:validate_private_repo',
         ],
     },
 )
