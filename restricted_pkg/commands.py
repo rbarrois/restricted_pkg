@@ -21,6 +21,18 @@ DEFAULT_PYPI_RC = '~/.pypirc'
 
 
 def get_repo_url(pypirc, repository):
+    """Fetch the RepositoryURL for a given repository, reading info from pypirc.
+
+    Will try to find the repository in the .pypirc, including username/password.
+
+    Args:
+        pypirc (str): path to the .pypirc config file
+        repository (str): URL or alias for the repository
+
+    Returns:
+        base.RepositoryURL for the repository
+    """
+    pypirc = os.path.abspath(os.path.expanduser(pypirc))
     pypi_config = base.PyPIConfig(pypirc)
     repo_config = pypi_config.get_repo_config(repository)
     if repo_config:
@@ -175,6 +187,8 @@ class upload_docs(setuptools_upload_docs):
 
 
 def setup(**kwargs):
+    """Custom setup() function, inserting our custom classes."""
+
     cmdclass = kwargs.setdefault('cmdclass', {})
     cmdclass['easy_install'] = easy_install
     cmdclass['register'] = register
