@@ -34,6 +34,9 @@ class RepositoryURL(object):
             ident, self.netloc = netloc.rsplit('@', 1)
             if ':' in ident:
                 self.username, self.password = ident.split(':', 1)
+            else:
+                self.username = ident
+
         else:
             self.netloc = netloc
 
