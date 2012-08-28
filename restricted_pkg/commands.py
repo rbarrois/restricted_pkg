@@ -97,11 +97,19 @@ class easy_install(base_easy_install):
 
         repo_url = get_repo_url(self.pypirc, self.distribution.private_repository)
 
+        # Retrieve disable_pypi from install
+        self.set_undefined_options('install', ('disable_pypi', 'disable_pypi'))
+
         if self.disable_pypi:
-            self._clean_find_links()
-            self.find_links.append(repo_url)
+            self.index_url = repo_url.full_url
+            log.info("disable_pypi requested, replacing index_url with %s.",
+                repo_url.base_url)
+            self.no_find_links = True
         else:
-            self.index_url = repo_url
+            log.info("Adding private repository %s to searched repositories.",
+                repo_url.base_url)
+            self._clean_find_links()
+            self.find_links.append(repo_url.full_url)
 
         base_easy_install.finalize_options(self)
 
