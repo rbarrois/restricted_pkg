@@ -51,9 +51,10 @@ def get_repo_url(pypirc, repository):
 
 
 class install(base_install):
+    """Overridden install which adds --disable-pypi and --pypirc options."""
     user_options = base_install.user_options + [
         ('disable-pypi', None, "Don't use PyPI package index"),
-        ('pypirc', None, "Path to .pypirc configuration file"),
+        ('pypirc=', None, "Path to .pypirc configuration file"),
     ]
     boolean_options = base_install.boolean_options + ['disable-pypi']
 
@@ -71,7 +72,7 @@ class easy_install(base_easy_install):
 
     user_options = base_easy_install.user_options + [
         ('disable-pypi', None, "Don't use PyPI package index"),
-        ('pypirc', None, "Path to .pypirc configuration file"),
+        ('pypirc=', None, "Path to .pypirc configuration file"),
     ]
     boolean_options = base_easy_install.boolean_options + ['disable-pypi']
 
@@ -118,7 +119,7 @@ class register(base_register):
     """Overridden register command restricting upload to the private repo."""
 
     user_options = base_register.user_options + [
-        ('pypirc', None, "Path to .pypirc configuration file"),
+        ('pypirc=', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
@@ -152,7 +153,7 @@ class upload(base_upload):
     """Overridden upload command restricting upload to the private repo."""
 
     user_options = base_upload.user_options + [
-        ('pypirc', None, "Path to .pypirc configuration file"),
+        ('pypirc=', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
@@ -186,7 +187,7 @@ class upload_docs(base_upload_docs):
     """Overridden upload_docs command restricting upload to the private repo."""
 
     user_options = base_upload_docs.user_options + [
-        ('pypirc', None, "Path to .pypirc configuration file"),
+        ('pypirc=', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
