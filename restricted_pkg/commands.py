@@ -8,7 +8,9 @@ import re
 import sys
 
 from distutils.errors import DistutilsOptionError, DistutilsSetupError
+from distutils import log
 import setuptools
+from setuptools.command.install import install as base_install
 from setuptools.command.easy_install import easy_install as base_easy_install
 from setuptools.command.upload_docs import upload_docs as base_upload_docs
 
@@ -48,6 +50,19 @@ def get_repo_url(pypirc, repository):
         return base.RepositoryURL(repository)
 
 
+class install(base_install):
+    user_options = base_install.user_options + [
+        ('disable-pypi', None, "Don't use PyPI package index"),
+        ('pypirc', None, "Path to .pypirc configuration file"),
+    ]
+    boolean_options = base_install.boolean_options + ['disable-pypi']
+
+    def initialize_options(self):
+        base_install.initialize_options(self)
+        self.disable_pypi = None
+        self.pypirc = None
+
+
 class easy_install(base_easy_install):
     """Overridden easy_install which adds a url from private_repository.
 
@@ -58,10 +73,11 @@ class easy_install(base_easy_install):
         ('disable-pypi', None, "Don't use PyPI package index"),
         ('pypirc', None, "Path to .pypirc configuration file"),
     ]
+    boolean_options = base_easy_install.boolean_options + ['disable-pypi']
 
     def initialize_options(self):
         base_easy_install.initialize_options(self)
-        self.disable_pypi = False
+        self.disable_pypi = None
         self.pypirc = None
 
     def _clean_find_links(self):
@@ -197,6 +213,7 @@ def setup(**kwargs):
 
     cmdclass = kwargs.setdefault('cmdclass', {})
     cmdclass['easy_install'] = easy_install
+    cmdclass['install'] = install
     cmdclass['register'] = register
     cmdclass['upload'] = upload
     cmdclass['upload_docs'] = upload_docs
