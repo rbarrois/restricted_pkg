@@ -1,0 +1,7 @@
+example_restricted_pkg
+======================
+
+This sample project demonstrates using a private package index instead of PyPI.
+
+Feel free to update its 'private_repository' URL with another version of your
+choice.
