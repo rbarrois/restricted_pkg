@@ -1,5 +1,5 @@
 restricted_pkg
-============
+==============
 
 This python package provide a simple wrapper around `Distribute <http://packages.python.org/distribute/>`_ to handle
 private projects.
@@ -28,3 +28,5 @@ In your ``setup.py`` script, ensure you have the following lines::
             "restricted_pkg",
         ],
     )
+
+.. vim: ft=rst
