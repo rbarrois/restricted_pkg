@@ -5,4 +5,4 @@
 __author__ = u"Raphaël Barrois <raphael.barrois@polytechnique.org>"
 __version__ = '0.1.0'
 
-from .overrides import setup
+from .commands import setup

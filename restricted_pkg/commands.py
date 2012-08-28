@@ -17,10 +17,16 @@ from setuptools.command.upload_docs import upload_docs as setuptools_upload_docs
 from . import base
 
 
+DEFAULT_PYPI_RC = '~/.pypirc'
+
+
 def get_repo_url(pypirc, repository):
     pypi_config = base.PyPIConfig(pypirc)
     repo_config = pypi_config.get_repo_config(repository)
-    return repo_config.get_clean_url()
+    if repo_config:
+        return repo_config.get_clean_url()
+    else:
+        return base.RepositoryURL(repository)
 
 
 class easy_install(setuptools_easy_install):
@@ -86,10 +92,10 @@ class register(setuptools_register):
         if self.repository and repo_url not in package_repo:
             raise DistutilsOptionError(
                 "The --repository option of private packages must match the "
-                "configured private repository, %s." % package_repo.unauthed_url()
+                "configured private repository, %s." % package_repo.base_url
             )
 
-        self.repository = repo_url.unauthed_url()
+        self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
 
@@ -122,10 +128,10 @@ class upload(setuptools_upload):
         if self.repository and repo_url not in package_repo:
             raise DistutilsOptionError(
                 "The --repository option of private packages must match the "
-                "configured private repository, %s." % package_repo.unauthed_url()
+                "configured private repository, %s." % package_repo.base_url
             )
 
-        self.repository = repo_url.unauthed_url()
+        self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
 
@@ -158,10 +164,10 @@ class upload_docs(setuptools_upload_docs):
         if self.repository and repo_url not in package_repo:
             raise DistutilsOptionError(
                 "The --repository option of private packages must match the "
-                "configured private repository, %s." % package_repo.unauthed_url()
+                "configured private repository, %s." % package_repo.base_url
             )
 
-        self.repository = repo_url.unauthed_url()
+        self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
 

@@ -5,6 +5,10 @@
 
 """Handle repository-related logic."""
 
+import ConfigParser
+import getpass
+import urlparse
+
 
 class RepositoryURL(object):
 
@@ -12,12 +16,16 @@ class RepositoryURL(object):
         scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
         self.scheme = scheme
 
-        self.with_auth = '@' in netloc
-        ident, self.netloc = netloc.rsplit('@', 1)
-        if ':' in ident:
-            self.username, self.password = ident.split(':', 1)
+        self.with_auth = False
+        self.username = self.password = ''
+
+        if '@' in netloc:
+            self.with_auth = True
+            ident, self.netloc = netloc.rsplit('@', 1)
+            if ':' in ident:
+                self.username, self.password = ident.split(':', 1)
         else:
-            self.username = self.password = ''
+            self.netloc = netloc
 
         self.path = path
         self.params = params
@@ -28,8 +36,8 @@ class RepositoryURL(object):
         if not isinstance(other, RepositoryURL):
             return NotImplemented
 
-        return (self.scheme = other.scheme
-            and self.netloc = other.netloc
+        return (self.scheme == other.scheme
+            and self.netloc == other.netloc
             and other.path.startswith(self.path)
         )
 
@@ -112,7 +120,7 @@ class PyPIConfig(object):
         config = ConfigParser.ConfigParser(self.path)
         if config.has_section('distutils'):
             servers = [server.strip() for server in config.get('distutils', 'index-servers', '')]
-            servers = [server for server in servers if server]
+            servers = [server for server in servers if server]
 
             for server in servers:
                 repo_config = RepositoryConfig(server)
@@ -123,6 +131,8 @@ class PyPIConfig(object):
         repo_config.fill(config, 'server-login')
 
     def get_repo_config(self, repo='default'):
-        for repo_config in self.repositories():
+        for repo_config in self.repositories:
             if repo_config.name == repo or repo_config.url in RepositoryURL(repo):
                 return repo_config
+
+        return None
