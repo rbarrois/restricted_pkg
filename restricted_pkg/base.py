@@ -8,6 +8,7 @@
 import ConfigParser
 import getpass
 import urlparse
+import sys
 
 
 class RepositoryURL(object):
@@ -92,6 +93,13 @@ class RepositoryURL(object):
         return self.full_url
 
 
+def config_get(config, section, option, default=None):
+    if config.has_option(section, option):
+        return config.get(section, option)
+    else:
+        return default
+
+
 class RepositoryConfig(object):
     """Holds data about a .pypirc repository entry.
 
@@ -101,6 +109,10 @@ class RepositoryConfig(object):
         username (str): username to connect to the repository
         password (str): password to connect to the repository
     """
+
+    DEFAULT_REPOSITORIES = {
+        'pypi': 'https://pypi.python.org/',
+    }
 
     def __init__(self, name):
         self.name = name
@@ -116,15 +128,16 @@ class RepositoryConfig(object):
             section (str): the section to use
         """
         if config.has_section(section):
-            self.url = RepositoryURL(config.get(section, 'repository', ''))
-            self.username = config.get(section, 'username', '')
-            self.password = config.get(section, 'password', '')
+            default_url = self.DEFAULT_REPOSITORIES.get(self.name, '')
+            self.url = RepositoryURL(config_get(config, section, 'repository', default_url))
+            self.username = config_get(config, section, 'username', '')
+            self.password = config_get(config, section, 'password', '')
 
     def prompt_auth(self):
         """Prompt the user for login/pass, if needed."""
         if self.username and self.password:
             return
-        sys.stdout.write("Please insert your credentials for %s\n" % self.repo_url)
+        sys.stdout.write("Please insert your credentials for %s\n" % self.url.base_url)
         while not self.username:
             self.username = raw_input("Username [%s]: " % getpass.getuser())
 
@@ -134,7 +147,7 @@ class RepositoryConfig(object):
     @property
     def needs_auth(self):
         """Whether this repository needs authentication."""
-        return self.username or self.password or self.url.needs_auth
+        return self.username or self.password or (self.url and self.url.needs_auth)
 
     def get_clean_url(self):
         """Retrieve the clean, full URL - including username/password."""
@@ -160,9 +173,11 @@ class PyPIConfig(object):
 
     def _read_config(self):
         """Read the configuration file."""
-        config = ConfigParser.ConfigParser(self.path)
+        config = ConfigParser.ConfigParser()
+        config.read(self.path)
         if config.has_section('distutils'):
-            servers = [server.strip() for server in config.get('distutils', 'index-servers', '')]
+            server_names = config.get('distutils', 'index-servers', '')
+            servers = [name.strip() for name in server_names.split('\n')]
             servers = [server for server in servers if server]
 
             for server in servers:
