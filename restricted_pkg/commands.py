@@ -81,14 +81,6 @@ class easy_install(base_easy_install):
         self.disable_pypi = None
         self.pypirc = None
 
-    def _clean_find_links(self):
-        """Cleanup the ``find_links`` attribute."""
-        if self.find_links is not None:
-            if isinstance(self.find_links, str):
-                self.find_links = self.find_links.split()
-        else:
-            self.find_links = []
-
     def finalize_options(self):
         if self.distribution.private_repository is None:
             raise DistutilsSetupError(
@@ -102,16 +94,24 @@ class easy_install(base_easy_install):
         self.set_undefined_options('install', ('disable_pypi', 'disable_pypi'))
 
         if self.disable_pypi:
-            self.index_url = repo_url.full_url
-            log.info("disable_pypi requested, replacing index_url with %s.",
+            log.info("Replacing PyPI with private repository %s.",
                 repo_url.base_url)
+            # Replace PyPI
+            self.index_url = repo_url.full_url
+            # Disable find_links option inherited from packages
             self.no_find_links = True
+
         else:
+            # Clean up self.find_links
+            self.find_links = self.find_links or []
+            self.ensure_string_list('find_links')
+
+            # Add custom URL
             log.info("Adding private repository %s to searched repositories.",
                 repo_url.base_url)
-            self._clean_find_links()
             self.find_links.append(repo_url.full_url)
 
+        # Parent options
         base_easy_install.finalize_options(self)
 
 
@@ -142,6 +142,7 @@ class register(base_register):
                 "configured private repository, %s." % package_repo.base_url
             )
 
+        log.info("Switching to private repository at %s", package_repo.base_url)
         self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
@@ -176,6 +177,7 @@ class upload(base_upload):
                 "configured private repository, %s." % package_repo.base_url
             )
 
+        log.info("Switching to private repository at %s", package_repo.base_url)
         self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
@@ -210,6 +212,7 @@ class upload_docs(base_upload_docs):
                 "configured private repository, %s." % package_repo.base_url
             )
 
+        log.info("Switching to private repository at %s", package_repo.base_url)
         self.repository = repo_url.base_url
         self.username = repo_url.username
         self.password = repo_url.password
