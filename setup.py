@@ -48,7 +48,7 @@ setup(
     test_suite='tests',
     entry_points={
         'distutils.setup_keywords': [
-            'private_repository = restricted_pkg.hooks:validate_private_repo',
+            'private_repository = restricted_pkg.validators:validate_private_repo',
         ],
     },
 )
