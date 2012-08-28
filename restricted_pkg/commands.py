@@ -3,16 +3,23 @@
 # Distributed under the MIT License.
 
 from urllib2 import urlparse
+import os
 import re
 import sys
 
 from distutils.errors import DistutilsOptionError, DistutilsSetupError
-
 import setuptools
-from setuptools.command.easy_install import easy_install as setuptools_easy_install
-from setuptools.command.upload import upload as setuptools_upload
-from setuptools.command.register import register as setuptools_register
-from setuptools.command.upload_docs import upload_docs as setuptools_upload_docs
+from setuptools.command.easy_install import easy_install as base_easy_install
+from setuptools.command.upload_docs import upload_docs as base_upload_docs
+
+try:
+    from distutils.command.upload import upload as base_upload
+except ImportError:
+    from setuptools.command.upload import upload as base_upload
+try:
+    from distutils.command.register import register as base_register
+except ImportError:
+    from setuptools.command.register import register as base_register
 
 from . import base
 
@@ -41,19 +48,24 @@ def get_repo_url(pypirc, repository):
         return base.RepositoryURL(repository)
 
 
-class easy_install(setuptools_easy_install):
+class easy_install(base_easy_install):
+    """Overridden easy_install which adds a url from private_repository.
 
-    user_options = setuptools_easy_install.user_options + [
+    Also handles username/password prompting for that private_repository.
+    """
+
+    user_options = base_easy_install.user_options + [
         ('disable-pypi', None, "Don't use PyPI package index"),
         ('pypirc', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
-        setuptools_easy_install.initialize_options(self)
+        base_easy_install.initialize_options(self)
         self.disable_pypi = False
         self.pypirc = None
 
     def _clean_find_links(self):
+        """Cleanup the ``find_links`` attribute."""
         if self.find_links is not None:
             if isinstance(self.find_links, str):
                 self.find_links = self.find_links.split()
@@ -75,21 +87,19 @@ class easy_install(setuptools_easy_install):
         else:
             self.index_url = repo_url
 
-        setuptools_easy_install.finalize_options(self)
+        base_easy_install.finalize_options(self)
 
 
-class register(setuptools_register):
-    user_options = setuptools_register.user_options + [
+class register(base_register):
+    """Overridden register command restricting upload to the private repo."""
+
+    user_options = base_register.user_options + [
         ('pypirc', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
-        setuptools_register.initialize_options(self)
+        base_register.initialize_options(self)
         self.pypirc = None
-
-    def get_repository_config(self, repository):
-        pypi_config = base.PyPIConfig(self.pypirc)
-        return pypi_config.get_repo_config(repository)
 
     def finalize_options(self):
         if self.distribution.private_repository is None:
@@ -111,21 +121,19 @@ class register(setuptools_register):
         self.username = repo_url.username
         self.password = repo_url.password
 
-        setuptools_register.finalize_options(self)
+        base_register.finalize_options(self)
 
 
-class upload(setuptools_upload):
-    user_options = setuptools_upload.user_options + [
+class upload(base_upload):
+    """Overridden upload command restricting upload to the private repo."""
+
+    user_options = base_upload.user_options + [
         ('pypirc', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
-        setuptools_upload.initialize_options(self)
+        base_upload.initialize_options(self)
         self.pypirc = None
-
-    def get_repository_config(self, repository):
-        pypi_config = base.PyPIConfig(self.pypirc)
-        return pypi_config.get_repo_config(repository)
 
     def finalize_options(self):
         if self.distribution.private_repository is None:
@@ -147,21 +155,19 @@ class upload(setuptools_upload):
         self.username = repo_url.username
         self.password = repo_url.password
 
-        setuptools_upload.finalize_options(self)
+        base_upload.finalize_options(self)
 
 
-class upload_docs(setuptools_upload_docs):
-    user_options = setuptools_upload_docs.user_options + [
+class upload_docs(base_upload_docs):
+    """Overridden upload_docs command restricting upload to the private repo."""
+
+    user_options = base_upload_docs.user_options + [
         ('pypirc', None, "Path to .pypirc configuration file"),
     ]
 
     def initialize_options(self):
-        setuptools_upload_docs.initialize_options(self)
+        base_upload_docs.initialize_options(self)
         self.pypirc = None
-
-    def get_repository_config(self, repository):
-        pypi_config = base.PyPIConfig(self.pypirc)
-        return pypi_config.get_repo_config(repository)
 
     def finalize_options(self):
         if self.distribution.private_repository is None:
@@ -183,7 +189,7 @@ class upload_docs(setuptools_upload_docs):
         self.username = repo_url.username
         self.password = repo_url.password
 
-        setuptools_upload_docs.finalize_options(self)
+        base_upload_docs.finalize_options(self)
 
 
 def setup(**kwargs):
