@@ -5,11 +5,15 @@
 
 """Handle repository-related logic."""
 
-import ConfigParser
 import getpass
-import urlparse
 import sys
 
+if sys.version_info[0] >= 3:
+    from urllib.parse import urlparse
+    import configparser
+else:
+    from urllib2 import urlparse
+    import ConfigParser as configparser
 
 class RepositoryURL(object):
     """Representation of a repository URL.
@@ -124,7 +128,7 @@ class RepositoryConfig(object):
         """Fill data from a given configuration section.
 
         Args:
-            config (ConfigParser): the configuration file
+            config (configparser): the configuration file
             section (str): the section to use
         """
         if config.has_section(section):
@@ -173,7 +177,7 @@ class PyPIConfig(object):
 
     def _read_config(self):
         """Read the configuration file."""
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(self.path)
         if config.has_section('distutils'):
             server_names = config.get('distutils', 'index-servers', '')

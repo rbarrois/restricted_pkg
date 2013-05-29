@@ -2,7 +2,6 @@
 # Copyright (c) 2012-2013 Raphaël Barrois.
 # Distributed under the MIT License.
 
-from urllib2 import urlparse
 import os
 import re
 import sys
@@ -13,6 +12,11 @@ import setuptools
 from setuptools.command.install import install as base_install
 from setuptools.command.easy_install import easy_install as base_easy_install
 from setuptools.command.upload_docs import upload_docs as base_upload_docs
+
+if sys.version_info[0] >= 3:
+    from urllib.parse import urlparse
+else:
+    from urllib2 import urlparse
 
 try:
     from distutils.command.upload import upload as base_upload
