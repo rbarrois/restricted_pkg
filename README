@@ -12,6 +12,12 @@ It provides the following features:
 - Easy support for authenticated URLs when accessing the index.
 
 
+Compatibility
+-------------
+
+The ``restricted_pkg`` package requires Distribute, and supports Python 2.6 and later (including Python3).
+
+
 Usage
 -----
 
