@@ -8,12 +8,9 @@
 import getpass
 import sys
 
-if sys.version_info[0] >= 3:
-    from urllib.parse import urlparse
-    import configparser
-else:
-    from urllib2 import urlparse
-    import ConfigParser as configparser
+from .compat import configparser
+from .compat import urlparse
+
 
 class RepositoryURL(object):
     """Representation of a repository URL.

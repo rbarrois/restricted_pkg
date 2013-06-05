@@ -13,10 +13,9 @@ from setuptools.command.install import install as base_install
 from setuptools.command.easy_install import easy_install as base_easy_install
 from setuptools.command.upload_docs import upload_docs as base_upload_docs
 
-if sys.version_info[0] >= 3:
-    from urllib.parse import urlparse
-else:
-    from urllib2 import urlparse
+
+from .compat import urlparse
+
 
 try:
     from distutils.command.upload import upload as base_upload
