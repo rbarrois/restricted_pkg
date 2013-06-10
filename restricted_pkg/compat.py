@@ -2,6 +2,7 @@
 # Copyright (c) 2012-2013 Raphaël Barrois.
 # Distributed under the MIT License.
 
+import sys
 
 if sys.version_info[0] >= 3:
     from urllib.parse import urlparse

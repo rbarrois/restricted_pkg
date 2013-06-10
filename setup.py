@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 import re
 
@@ -33,7 +33,9 @@ setup(
     keywords=['pypi', 'package index', 'private', 'repository'],
     url="http://github.com/rbarrois/restricted_pkg",
     download_url="http://pypi.python.org/pypi/restricted_pkg/",
-    packages=find_packages(),
+    packages=[
+        'restricted_pkg',
+    ],
     install_requires=[
         'distribute',
     ],
