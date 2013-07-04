@@ -9,7 +9,7 @@ import getpass
 import sys
 
 from .compat import configparser
-from .compat import urlparse
+from .compat import urlparse, urlunparse
 
 
 class RepositoryURL(object):
@@ -25,7 +25,7 @@ class RepositoryURL(object):
     """
 
     def __init__(self, url):
-        scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
+        scheme, netloc, path, params, query, fragment = urlparse(url)
         self.scheme = scheme
 
         self.with_auth = False
@@ -65,7 +65,7 @@ class RepositoryURL(object):
     @property
     def base_url(self):
         """The base, unauthenticated URL for the repository."""
-        return urlparse.urlunparse((
+        return urlunparse((
             self.scheme,
             self.netloc,
             self.path,
@@ -81,7 +81,7 @@ class RepositoryURL(object):
             netloc = '%s:%s@%s' % (self.username, self.password, self.netloc)
         else:
             netloc = self.netloc
-        return urlparse.urlunparse((
+        return urlunparse((
             self.scheme,
             netloc,
             self.path,

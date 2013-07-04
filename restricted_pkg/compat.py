@@ -4,11 +4,24 @@
 
 import sys
 
-if sys.version_info[0] >= 3:
-    from urllib.parse import urlparse
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    import urllib
     import configparser
 else:
-    from urllib2 import urlparse
+    import urllib2 
     import ConfigParser as configparser
 
 
+def urlparse(*args, **kwargs):
+    if PY3:
+        return urllib.parse.urlparse(*args)
+    else:
+        return urllib2.urlparse.urlparse(*args)
+
+def urlunparse(*args, **kwargs):
+    if PY3:
+        return urllib.parse.urlunparse(*args)
+    else:
+        return urllib2.urlparse.urlunparse(*args)
