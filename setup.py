@@ -36,18 +36,18 @@ setup(
     packages=[
         'restricted_pkg',
     ],
-    install_requires=[
-        'distribute',
+    setup_requires=[
+        'setuptools>=0.8', 
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 2',
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 2",
     ],
     test_suite='tests',
     entry_points={
