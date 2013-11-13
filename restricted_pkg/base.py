@@ -177,7 +177,7 @@ class PyPIConfig(object):
         config = configparser.ConfigParser()
         config.read(self.path)
         if config.has_section('distutils'):
-            server_names = config.get('distutils', 'index-servers', '')
+            server_names = config.get('distutils', 'index-servers')
             servers = [name.strip() for name in server_names.split('\n')]
             servers = [server for server in servers if server]
 
