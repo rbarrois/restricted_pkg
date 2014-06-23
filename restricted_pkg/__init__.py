@@ -4,6 +4,6 @@
 from __future__ import unicode_literals
 
 __author__ = "Raphaël Barrois <raphael.barrois+restrictedpkg@polytechnique.org>"
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 from .commands import setup
