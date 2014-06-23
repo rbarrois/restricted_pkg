@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-from setuptools import setup
+import codecs
 import os
 import re
+import sys
+
+from setuptools import setup
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,8 +14,8 @@ root_dir = os.path.abspath(os.path.dirname(__file__))
 def get_version(package_name):
     version_re = re.compile(r"^__version__ = [\"']([\w_.-]+)[\"']$")
     package_components = package_name.split('.')
-    path_components = package_components + ['__init__.py']
-    with open(os.path.join(root_dir, *path_components)) as f:
+    init_path = os.path.join(root_dir, *(package_components + ['__init__.py']))
+    with codecs.open(init_path, 'r', 'utf-8') as f:
         for line in f:
             match = version_re.match(line[:-1])
             if match:
@@ -37,7 +40,7 @@ setup(
         'restricted_pkg',
     ],
     setup_requires=[
-        'setuptools>=0.8', 
+        'setuptools>=0.8',
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
